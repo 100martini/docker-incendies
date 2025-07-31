@@ -2,7 +2,6 @@ FROM alpine:3.18
 
 RUN apk update && apk add --no-cache vsftpd
 
-# Create directories
 RUN mkdir -p /var/run/vsftpd/empty
 
 COPY conf/vsftpd.conf /etc/vsftpd/vsftpd.conf

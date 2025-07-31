@@ -1,6 +1,5 @@
 #!/bin/sh
 
-# Wait for MariaDB
 echo "Waiting for MariaDB..."
 while ! nc -z mariadb 3306; do
     sleep 1
@@ -9,7 +8,6 @@ echo "MariaDB is ready!"
 
 cd /var/www/html
 
-# Create wp-config.php if it doesn't exist
 if [ ! -f wp-config.php ]; then
     echo "Creating WordPress configuration..."
     
@@ -20,7 +18,6 @@ if [ ! -f wp-config.php ]; then
         --dbhost=mariadb:3306 \
         --allow-root
     
-    # Install WordPress if not already installed
     if ! wp core is-installed --allow-root; then
         echo "Installing WordPress..."
         wp core install \
@@ -31,7 +28,6 @@ if [ ! -f wp-config.php ]; then
             --admin_email=$WP_ADMIN_EMAIL \
             --allow-root
         
-        # Create additional user
         wp user create $WP_USER $WP_USER_EMAIL \
             --user_pass=$WP_USER_PASSWORD \
             --role=author \
@@ -40,7 +36,6 @@ if [ ! -f wp-config.php ]; then
         echo "WordPress installation completed!"
     fi
     
-    # Configure Redis if available
     if nc -z redis 6379; then
         echo "Configuring Redis cache..."
         wp config set WP_REDIS_HOST redis --allow-root
