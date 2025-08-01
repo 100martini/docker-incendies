@@ -8,7 +8,17 @@ setup:
 	@echo "Setting up data directories..."
 	@sudo mkdir -p $(DATA_PATH)/mariadb $(DATA_PATH)/wordpress
 	@sudo chown -R $(USER):$(USER) $(DATA_PATH)
-	@echo "Data directories created"
+	@echo "Checking secrets..."
+	@if [ ! -d "./secrets" ]; then \
+		echo "Error: secrets directory not found!"; \
+		echo "Please create it with:"; \
+		echo "  mkdir -p secrets"; \
+		echo "  echo 'your_root_password' > secrets/db_root_password.txt"; \
+		echo "  echo 'your_db_password' > secrets/db_password.txt"; \
+		echo "  echo 'your_admin_password' > secrets/credentials.txt"; \
+		exit 1; \
+	fi
+	@echo "Setup complete"
 
 up:
 	$(COMPOSE) up -d --build
