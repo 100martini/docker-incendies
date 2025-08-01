@@ -1,6 +1,13 @@
 #!/bin/sh
 set -e
 
+if [ -f /run/secrets/db_root_password ]; then
+    MYSQL_ROOT_PASSWORD=$(cat /run/secrets/db_root_password)
+fi
+if [ -f /run/secrets/db_password ]; then
+    MYSQL_PASSWORD=$(cat /run/secrets/db_password)
+fi
+
 if [ ! -d "/var/lib/mysql/mysql" ]; then
     echo "Initializing database..."
     mysql_install_db --user=mysql --datadir=/var/lib/mysql

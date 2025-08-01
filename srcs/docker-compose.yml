@@ -25,6 +25,9 @@ services:
     env_file:
       - .env
     restart: always
+    secrets:
+      - db_password
+      - credentials
 
   mariadb:
     build: requirements/mariadb
@@ -36,6 +39,9 @@ services:
     env_file:
       - .env
     restart: always
+    secrets:
+      - db_root_password
+      - db_password
 
   redis:
     build: requirements/bonus/redis
@@ -107,3 +113,11 @@ volumes:
 networks:
   inception:
     driver: bridge
+
+secrets:
+  db_root_password:
+    file: ../secrets/db_root_password.txt
+  db_password:
+    file: ../secrets/db_password.txt
+  credentials:
+    file: ../secrets/credentials.txt

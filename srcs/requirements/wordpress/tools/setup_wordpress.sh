@@ -1,5 +1,12 @@
 #!/bin/sh
 
+if [ -f /run/secrets/db_password ]; then
+    MYSQL_PASSWORD=$(cat /run/secrets/db_password)
+fi
+if [ -f /run/secrets/credentials ]; then
+    WP_ADMIN_PASSWORD=$(cat /run/secrets/credentials)
+fi
+
 echo "Waiting for MariaDB..."
 while ! nc -z mariadb 3306; do
     sleep 1
