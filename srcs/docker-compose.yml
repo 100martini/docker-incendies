@@ -82,13 +82,13 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /home/wel-kass/data/mariadb
+      device: /home/${USER}/data/mariadb
   wordpress_files:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/wel-kass/data/wordpress
+      device: /home/${USER}/data/wordpress
 
 networks:
   inception:

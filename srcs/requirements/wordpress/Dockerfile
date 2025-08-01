@@ -16,8 +16,7 @@ RUN apk update && apk add --no-cache \
     php81-redis \
     wget \
     unzip \
-    netcat-openbsd && \
-    ln -s /usr/bin/php81 /usr/bin/php
+    netcat-openbsd
 
 RUN adduser -D -s /bin/sh wordpress && \
     mkdir -p /var/www/html && \
@@ -30,7 +29,7 @@ RUN wget https://wordpress.org/latest.tar.gz && \
     rm latest.tar.gz && \
     chown -R wordpress:wordpress /var/www/html
 
-RUN wget https://raw.githubusercontent.com/wp-cli/wp-cli/master/wp-cli.phar && \
+RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
     chmod +x wp-cli.phar && \
     mv wp-cli.phar /usr/local/bin/wp
 

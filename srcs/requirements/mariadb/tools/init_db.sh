@@ -11,7 +11,7 @@ pid=$!
 
 echo "Waiting for MariaDB to start..."
 for i in $(seq 30); do
-    if mysql -u root -e "SELECT 1" > /dev/null 2>&1; then
+    if mysqladmin ping -h localhost --silent; then
         break
     fi
     sleep 1

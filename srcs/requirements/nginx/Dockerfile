@@ -2,8 +2,7 @@ FROM alpine:3.18
 
 RUN apk update && apk add --no-cache nginx openssl
 
-RUN adduser -D -s /bin/sh nginx && \
-    mkdir -p /var/www/html && \
+RUN mkdir -p /var/www/html && \
     mkdir -p /etc/nginx/ssl && \
     chown -R nginx:nginx /var/www/html
 

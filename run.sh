@@ -16,8 +16,9 @@ echo -e "${YELLOW}Updating .env file...${NC}"
 sed -i "s/wel-kass/$USER/g" srcs/.env
 
 echo -e "${YELLOW}Creating data directories...${NC}"
-mkdir -p /home/$USER/data/mariadb
-mkdir -p /home/$USER/data/wordpress
+sudo mkdir -p /home/$USER/data/mariadb
+sudo mkdir -p /home/$USER/data/wordpress
+sudo chown -R $USER:$USER /home/$USER/data
 
 echo -e "${YELLOW}Adding domain to /etc/hosts...${NC}"
 if ! grep -q "127.0.0.1 $USER.42.fr" /etc/hosts; then
@@ -25,19 +26,20 @@ if ! grep -q "127.0.0.1 $USER.42.fr" /etc/hosts; then
 fi
 
 echo -e "${YELLOW}Cleaning up existing Docker resources...${NC}"
-docker-compose -f srcs/docker-compose.yml down -v 2>/dev/null || true
+cd srcs && docker-compose down -v 2>/dev/null || true
+cd ..
 docker system prune -af --volumes
 
 echo -e "${GREEN}Building and starting services...${NC}"
 make up
 
 echo -e "${YELLOW}Waiting for services to be ready...${NC}"
-sleep 10
+sleep 15
 
 echo -e "${GREEN}Checking services status:${NC}"
-docker-compose -f srcs/docker-compose.yml ps
+cd srcs && docker-compose ps && cd ..
 
-echo -e "${GREEN} Setup Complete ${NC}"
+echo -e "${GREEN}✓ Setup Complete ${NC}"
 echo -e "Access your services at:"
 echo -e "  - WordPress: https://$USER.42.fr"
 echo -e "  - Adminer: http://localhost:8080"
@@ -46,5 +48,5 @@ echo -e ""
 echo -e "FTP access:"
 echo -e "  - Host: localhost"
 echo -e "  - Port: 21"
-echo -e "  - User: Check FTP_USER in .env"
+echo -e "  - User: ${FTP_USER:-ftpuser}"
 echo -e "  - Pass: Check FTP_PASSWORD in .env"
