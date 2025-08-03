@@ -10,4 +10,4 @@ RUN wget https://github.com/portainer/portainer/releases/download/2.19.4/portain
 VOLUME /data
 EXPOSE 9000
 
-CMD ["/usr/local/bin/portainer"]
+CMD ["/usr/local/bin/portainer", "--no-analytics"]

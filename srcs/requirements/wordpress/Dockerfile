@@ -14,6 +14,7 @@ RUN apk update && apk add --no-cache \
     php81-xml \
     php81-zip \
     php81-redis \
+    php81-phar \
     wget \
     unzip \
     netcat-openbsd
