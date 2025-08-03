@@ -27,7 +27,9 @@ services:
     restart: always
     secrets:
       - db_password
-      - credentials
+      - admin_password
+      - user_password
+      - redis_password
 
   mariadb:
     build: requirements/mariadb
@@ -49,6 +51,8 @@ services:
     networks:
       - inception
     restart: always
+    secrets:
+      - redis_password
 
   ftp:
     build: requirements/bonus/ftp
@@ -63,6 +67,8 @@ services:
     env_file:
       - .env
     restart: always
+    secrets:
+      - ftp_password
 
   adminer:
     build: requirements/bonus/adminer
@@ -119,5 +125,11 @@ secrets:
     file: ../secrets/db_root_password.txt
   db_password:
     file: ../secrets/db_password.txt
-  credentials:
-    file: ../secrets/credentials.txt
+  admin_password:
+    file: ../secrets/admin_password.txt
+  user_password:
+    file: ../secrets/user_password.txt
+  ftp_password:
+    file: ../secrets/ftp_password.txt
+  redis_password:
+    file: ../secrets/redis_password.txt

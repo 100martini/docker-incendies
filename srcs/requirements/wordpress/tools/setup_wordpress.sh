@@ -3,8 +3,14 @@
 if [ -f /run/secrets/db_password ]; then
     MYSQL_PASSWORD=$(cat /run/secrets/db_password)
 fi
-if [ -f /run/secrets/credentials ]; then
-    WP_ADMIN_PASSWORD=$(cat /run/secrets/credentials)
+if [ -f /run/secrets/admin_password ]; then
+    WP_ADMIN_PASSWORD=$(cat /run/secrets/admin_password)
+fi
+if [ -f /run/secrets/user_password ]; then
+    WP_USER_PASSWORD=$(cat /run/secrets/user_password)
+fi
+if [ -f /run/secrets/redis_password ]; then
+    REDIS_PASSWORD=$(cat /run/secrets/redis_password)
 fi
 
 echo "Waiting for MariaDB..."

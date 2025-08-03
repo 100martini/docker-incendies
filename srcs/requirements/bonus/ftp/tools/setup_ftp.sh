@@ -1,5 +1,9 @@
 #!/bin/sh
 
+if [ -f /run/secrets/ftp_password ]; then
+    FTP_PASSWORD=$(cat /run/secrets/ftp_password)
+fi
+
 adduser -D -s /bin/sh ${FTP_USER}
 echo "${FTP_USER}:${FTP_PASSWORD}" | chpasswd
 
