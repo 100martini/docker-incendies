@@ -1,27 +1,27 @@
 NAME = inception
 COMPOSE = docker-compose -f srcs/docker-compose.yml
 DATA_PATH = /home/$(USER)/data
+COLOR_RED    := \033[0;31m
+COLOR_GREEN  := \033[0;32m
+COLOR_YELLOW := \033[0;33m
+COLOR_RESET  := \033[0m
 
 all: setup up
 
 setup:
-	@echo "Setting up data directories..."
 	@sudo mkdir -p $(DATA_PATH)/mariadb $(DATA_PATH)/wordpress
 	@sudo chown -R $(USER):$(USER) $(DATA_PATH)
-	@echo "Checking secrets..."
 	@if [ ! -d "./secrets" ]; then \
-		echo "Error: secrets directory not found!"; \
-		echo "Please create it with:"; \
-		echo "  mkdir -p secrets"; \
-		echo "  echo 'your_root_password' > secrets/db_root_password.txt"; \
-		echo "  echo 'your_db_password' > secrets/db_password.txt"; \
-		echo "  echo 'your_admin_password' > secrets/admin_password.txt"; \
-		echo "  echo 'your_user_password' > secrets/user_password.txt"; \
-		echo "  echo 'your_ftp_password' > secrets/ftp_password.txt"; \
-		echo "  echo 'your_redis_password' > secrets/redis_password.txt"; \
+		echo "$(COLOR_YELLOW)Warning: secrets directory not found!$(COLOR_RESET)"; \
+		echo "Please make sure it contains the right files:"; \
+		echo "$(COLOR_GREEN)secrets$(COLOR_RESET)/db_root_password.txt"; \
+		echo "$(COLOR_GREEN)secrets$(COLOR_RESET)/db_password.txt"; \
+		echo "$(COLOR_GREEN)secrets$(COLOR_RESET)/admin_password.txt"; \
+		echo "$(COLOR_GREEN)secrets$(COLOR_RESET)/user_password.txt"; \
+		echo "$(COLOR_GREEN)secrets$(COLOR_RESET)/ftp_password.txt"; \
+		echo "$(COLOR_GREEN)secrets$(COLOR_RESET)/redis_password.txt"; \
 		exit 1; \
 	fi
-	@echo "Setup complete"
 
 up:
 	$(COMPOSE) up -d --build
@@ -30,7 +30,7 @@ down:
 	$(COMPOSE) down
 
 clean:
-	@echo "(data preserved)"
+	@echo "($(COLOR_GREEN)data preserved$(COLOR_RESET))"
 	$(COMPOSE) down
 
 fclean:
@@ -40,7 +40,7 @@ fclean:
 		docker system prune -af; \
 		sudo rm -rf $(DATA_PATH); \
 	else \
-		echo "Aborted fclean."; \
+		echo "$(COLOR_YELLOW)Aborted fclean.$(COLOR_RESET)"; \
 	fi
 
 re: fclean all
