@@ -10,6 +10,8 @@ services:
       - inception
     depends_on:
       - wordpress
+    env_file:
+      - .env
     restart: always
 
   wordpress:

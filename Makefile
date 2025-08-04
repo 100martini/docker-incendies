@@ -15,7 +15,10 @@ setup:
 		echo "  mkdir -p secrets"; \
 		echo "  echo 'your_root_password' > secrets/db_root_password.txt"; \
 		echo "  echo 'your_db_password' > secrets/db_password.txt"; \
-		echo "  echo 'your_admin_password' > secrets/credentials.txt"; \
+		echo "  echo 'your_admin_password' > secrets/admin_password.txt"; \
+		echo "  echo 'your_user_password' > secrets/user_password.txt"; \
+		echo "  echo 'your_ftp_password' > secrets/ftp_password.txt"; \
+		echo "  echo 'your_redis_password' > secrets/redis_password.txt"; \
 		exit 1; \
 	fi
 	@echo "Setup complete"
