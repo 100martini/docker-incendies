@@ -30,12 +30,18 @@ down:
 	$(COMPOSE) down
 
 clean:
-	$(COMPOSE) down -v
-	docker system prune -af
+	@echo "(data preserved)"
+	$(COMPOSE) down
 
-fclean: clean
-	@echo "Removing data directories..."
-	@sudo rm -rf $(DATA_PATH)
+fclean:
+	@read -p "⚠️  This will DELETE all WordPress x DB data. Continue? (y/N): " ans; \
+	if [ "$$ans" = "y" ] || [ "$$ans" = "Y" ]; then \
+		$(COMPOSE) down -v; \
+		docker system prune -af; \
+		sudo rm -rf $(DATA_PATH); \
+	else \
+		echo "Aborted fclean."; \
+	fi
 
 re: fclean all
 
