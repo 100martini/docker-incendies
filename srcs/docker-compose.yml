@@ -1,7 +1,8 @@
 services:
   nginx:
-    build: requirements/nginx
     container_name: nginx
+    image: nginx
+    build: requirements/nginx
     ports:
       - "443:443"
     volumes:
@@ -15,8 +16,9 @@ services:
     restart: always
 
   wordpress:
-    build: requirements/wordpress
     container_name: wordpress
+    image: wordpress
+    build: requirements/wordpress
     volumes:
       - wordpress_files:/var/www/html
     networks:
@@ -34,8 +36,9 @@ services:
       - redis_password
 
   mariadb:
-    build: requirements/mariadb
     container_name: mariadb
+    image: mariadb
+    build: requirements/mariadb
     volumes:
       - mariadb_data:/var/lib/mysql
     networks:
@@ -48,8 +51,9 @@ services:
       - db_password
 
   redis:
-    build: requirements/bonus/redis
     container_name: redis
+    image: redis
+    build: requirements/bonus/redis
     networks:
       - inception
     restart: always
@@ -57,8 +61,9 @@ services:
       - redis_password
 
   ftp:
-    build: requirements/bonus/ftp
     container_name: ftp
+    image: ftp
+    build: requirements/bonus/ftp
     ports:
       - "21:21"
       - "21000-21010:21000-21010"
@@ -73,8 +78,9 @@ services:
       - ftp_password
 
   adminer:
-    build: requirements/bonus/adminer
     container_name: adminer
+    image: adminer
+    build: requirements/bonus/adminer
     ports:
       - "8080:8080"
     networks:
@@ -82,8 +88,9 @@ services:
     restart: always
 
   static:
-    build: requirements/bonus/static
     container_name: static
+    image: static
+    build: requirements/bonus/static
     ports:
       - "8081:8081"
     networks:
@@ -91,8 +98,9 @@ services:
     restart: always
 
   portainer:
-    build: requirements/bonus/portainer
     container_name: portainer
+    image: portainer
+    build: requirements/bonus/portainer
     ports:
       - "9000:9000"
     volumes:
