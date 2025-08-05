@@ -4,10 +4,13 @@ if [ -f /run/secrets/ftp_password ]; then
     FTP_PASSWORD=$(cat /run/secrets/ftp_password)
 fi
 
-adduser -D -s /bin/sh ${FTP_USER}
-echo "${FTP_USER}:${FTP_PASSWORD}" | chpasswd
+adduser -D -h /home/$FTP_USER/ftp -s /bin/sh $FTP_USER
+echo "$FTP_USER:$FTP_PASSWORD" | chpasswd
 
-chown -R ${FTP_USER}:${FTP_USER} /var/www/html
-chmod -R 755 /var/www/html
+mkdir -p /home/$FTP_USER/ftp/files
+chown -R $FTP_USER:$FTP_USER /home/$FTP_USER/ftp/files
+chmod a-w /home/$FTP_USER/ftp
+
+mkdir -p /var/run/vsftpd/empty
 
 exec vsftpd /etc/vsftpd/vsftpd.conf
