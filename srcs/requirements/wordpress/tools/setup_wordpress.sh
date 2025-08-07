@@ -19,6 +19,12 @@ while ! nc -z mariadb 3306; do
 done
 echo "MariaDB is ready!"
 
+echo "Waiting for Redis..."
+while ! nc -z redis 6379; do
+    sleep 1
+done
+echo "Redis is ready!"
+
 cd /var/www/html
 
 if [ ! -f wp-config.php ]; then
@@ -30,6 +36,15 @@ if [ ! -f wp-config.php ]; then
         --dbpass=$MYSQL_PASSWORD \
         --dbhost=mariadb:3306 \
         --allow-root
+    
+    # Add Redis configuration before WordPress installation
+    echo "Configuring Redis cache..."
+    wp config set WP_REDIS_HOST redis --allow-root
+    wp config set WP_REDIS_PORT 6379 --allow-root
+    wp config set WP_REDIS_PASSWORD "$REDIS_PASSWORD" --allow-root
+    wp config set WP_REDIS_DATABASE 0 --allow-root
+    wp config set WP_CACHE true --allow-root --raw
+    wp config set WP_MEMORY_LIMIT 256M --allow-root
     
     if ! wp core is-installed --allow-root; then
         echo "Installing WordPress..."
@@ -49,14 +64,20 @@ if [ ! -f wp-config.php ]; then
         echo "WordPress installation completed!"
     fi
     
-    if nc -z redis 6379; then
-        echo "Configuring Redis cache..."
-        wp config set WP_REDIS_HOST redis --allow-root
-        wp config set WP_REDIS_PORT 6379 --allow-root
-        wp config set WP_REDIS_PASSWORD $REDIS_PASSWORD --allow-root
-        wp plugin install redis-cache --activate --allow-root || true
-        wp redis enable --allow-root || true
-    fi
+    wp plugin install redis-cache --activate --allow-root || true
+    
+    wp redis enable --allow-root || true
+    
+else
+    echo "Updating Redis configuration..."
+    wp config set WP_REDIS_HOST redis --allow-root
+    wp config set WP_REDIS_PORT 6379 --allow-root
+    wp config set WP_REDIS_PASSWORD "$REDIS_PASSWORD" --allow-root
+    wp config set WP_REDIS_DATABASE 0 --allow-root
+    wp config set WP_CACHE true --allow-root --raw
+    wp config set WP_MEMORY_LIMIT 256M --allow-root
+    
+    wp redis enable --allow-root || true
 fi
 
 exec php-fpm81 -F
