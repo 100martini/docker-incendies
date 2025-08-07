@@ -30,54 +30,52 @@ cd /var/www/html
 if [ ! -f wp-config.php ]; then
     echo "Creating WordPress configuration..."
     
-    wp config create \
+    su -s /bin/sh wordpress -c "wp config create \
         --dbname=$MYSQL_DATABASE \
         --dbuser=$MYSQL_USER \
         --dbpass=$MYSQL_PASSWORD \
-        --dbhost=mariadb:3306 \
-        --allow-root
+        --dbhost=mariadb:3306"
     
-    # Add Redis configuration before WordPress installation
     echo "Configuring Redis cache..."
-    wp config set WP_REDIS_HOST redis --allow-root
-    wp config set WP_REDIS_PORT 6379 --allow-root
-    wp config set WP_REDIS_PASSWORD "$REDIS_PASSWORD" --allow-root
-    wp config set WP_REDIS_DATABASE 0 --allow-root
-    wp config set WP_CACHE true --allow-root --raw
-    wp config set WP_MEMORY_LIMIT 256M --allow-root
+    su -s /bin/sh wordpress -c "wp config set WP_REDIS_HOST redis"
+    su -s /bin/sh wordpress -c "wp config set WP_REDIS_PORT 6379"
+    su -s /bin/sh wordpress -c "wp config set WP_REDIS_PASSWORD '$REDIS_PASSWORD'"
+    su -s /bin/sh wordpress -c "wp config set WP_REDIS_DATABASE 0"
+    su -s /bin/sh wordpress -c "wp config set WP_CACHE true --raw"
+    su -s /bin/sh wordpress -c "wp config set WP_MEMORY_LIMIT 256M"
     
-    if ! wp core is-installed --allow-root; then
+    if ! su -s /bin/sh wordpress -c "wp core is-installed"; then
         echo "Installing WordPress..."
-        wp core install \
+        su -s /bin/sh wordpress -c "wp core install \
             --url=$WP_URL \
-            --title="$WP_TITLE" \
+            --title='$WP_TITLE' \
             --admin_user=$WP_ADMIN_USER \
             --admin_password=$WP_ADMIN_PASSWORD \
-            --admin_email=$WP_ADMIN_EMAIL \
-            --allow-root
+            --admin_email=$WP_ADMIN_EMAIL"
         
-        wp user create $WP_USER $WP_USER_EMAIL \
+        su -s /bin/sh wordpress -c "wp user create $WP_USER $WP_USER_EMAIL \
             --user_pass=$WP_USER_PASSWORD \
-            --role=author \
-            --allow-root
+            --role=author"
         
         echo "WordPress installation completed!"
     fi
     
-    wp plugin install redis-cache --activate --allow-root || true
+    su -s /bin/sh wordpress -c "wp plugin install redis-cache --activate" || true
     
-    wp redis enable --allow-root || true
+    su -s /bin/sh wordpress -c "wp redis enable" || true
     
 else
     echo "Updating Redis configuration..."
-    wp config set WP_REDIS_HOST redis --allow-root
-    wp config set WP_REDIS_PORT 6379 --allow-root
-    wp config set WP_REDIS_PASSWORD "$REDIS_PASSWORD" --allow-root
-    wp config set WP_REDIS_DATABASE 0 --allow-root
-    wp config set WP_CACHE true --allow-root --raw
-    wp config set WP_MEMORY_LIMIT 256M --allow-root
+    su -s /bin/sh wordpress -c "wp config set WP_REDIS_HOST redis"
+    su -s /bin/sh wordpress -c "wp config set WP_REDIS_PORT 6379"
+    su -s /bin/sh wordpress -c "wp config set WP_REDIS_PASSWORD '$REDIS_PASSWORD'"
+    su -s /bin/sh wordpress -c "wp config set WP_REDIS_DATABASE 0"
+    su -s /bin/sh wordpress -c "wp config set WP_CACHE true --raw"
+    su -s /bin/sh wordpress -c "wp config set WP_MEMORY_LIMIT 256M"
     
-    wp redis enable --allow-root || true
+    su -s /bin/sh wordpress -c "wp redis enable" || true
 fi
+
+chown -R wordpress:wordpress /var/www/html
 
 exec php-fpm81 -F
